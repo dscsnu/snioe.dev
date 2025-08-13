@@ -28,12 +28,18 @@
 	$: paraProgress = progress <= STACK_FADE_END
 		? 0
 		: (progress - STACK_FADE_END) / (MAX_PROGRESS - STACK_FADE_END);
-	let hintText = '';
-	$: hintText = progress < 1
-		? 'Scroll / Swipe to Morph'
-		: stackFade < 1
-		? 'Keep Scrolling'
-		: (paraProgress < 1 ? 'Keep Scrolling' : '');
+
+	const WHEEL_COEFF = 0.0012;
+	const PLATEAU_PROGRESS = 1.0;
+	const UNLOCK_PROGRESS_THRESHOLD = 0.99;
+	const UNLOCK_REQUIRED_ACCUM = 0.05;
+	let unlockedBeyondMorph = false;
+	let unlockAccum = 0;
+	let touchCoeff = 0.003;
+	let lastTouchTime = 0;
+	let lastTouchY = 0;
+	let touchVelocity = 0;
+	const INERTIA_FACTOR = 260;
 
 	function animate() {
 		if (Math.abs(target - progress) < 0.0005) {
@@ -51,21 +57,79 @@
 
 	onMount(() => {
 		document.body.style.overflow = 'hidden';
-		const onWheel = (e: WheelEvent) => setTarget(target + e.deltaY * 0.0012);
-		const onTouchStart = (e: TouchEvent) => { touchY = e.touches[0].clientY; };
+		touchCoeff = 0.0045 * (800 / Math.min(window.innerHeight, 800));
+
+		const onWheel = (e: WheelEvent) => {
+			const delta = e.deltaY * WHEEL_COEFF;
+			if (!unlockedBeyondMorph) {
+				if (progress >= UNLOCK_PROGRESS_THRESHOLD) {
+					if (delta > 0) {
+						unlockAccum += delta;
+						if (unlockAccum >= UNLOCK_REQUIRED_ACCUM) {
+							unlockedBeyondMorph = true;
+						} else {
+							setTarget(PLATEAU_PROGRESS);
+							return;
+						}
+					}
+				}
+			}
+			setTarget(target + delta);
+		};
+		const onTouchStart = (e: TouchEvent) => {
+			touchY = e.touches[0].clientY;
+			lastTouchY = touchY;
+			lastTouchTime = performance.now();
+			touchVelocity = 0;
+		};
 		const onTouchMove = (e: TouchEvent) => {
 			const y = e.touches[0].clientY;
 			const dy = touchY - y;
 			touchY = y;
-			setTarget(target + dy * 0.003);
+			const now = performance.now();
+			const dt = now - lastTouchTime;
+			if (dt > 0) {
+				const instV = (lastTouchY - y) / dt;
+				touchVelocity = touchVelocity * 0.6 + instV * 0.4;
+				lastTouchTime = now;
+				lastTouchY = y;
+			}
+			const progDelta = dy * touchCoeff;
+			if (!unlockedBeyondMorph) {
+				if (progress >= UNLOCK_PROGRESS_THRESHOLD) {
+					if (progDelta > 0) {
+						unlockAccum += progDelta;
+						if (unlockAccum >= UNLOCK_REQUIRED_ACCUM) {
+							unlockedBeyondMorph = true;
+						} else {
+							setTarget(PLATEAU_PROGRESS);
+							return;
+						}
+					}
+				}
+			}
+			setTarget(target + progDelta);
+		};
+		const onTouchEnd = () => {
+			const v = touchVelocity;
+			const THRESH = 0.18;
+			if (Math.abs(v) > THRESH) {
+				let intended = target + (v * INERTIA_FACTOR * touchCoeff);
+				if (!unlockedBeyondMorph) {
+					intended = Math.min(intended, PLATEAU_PROGRESS);
+				}
+				setTarget(intended);
+			}
 		};
 		window.addEventListener('wheel', onWheel, { passive: true });
 		window.addEventListener('touchstart', onTouchStart, { passive: true });
 		window.addEventListener('touchmove', onTouchMove, { passive: true });
+		window.addEventListener('touchend', onTouchEnd, { passive: true });
 		return () => {
 			window.removeEventListener('wheel', onWheel);
 			window.removeEventListener('touchstart', onTouchStart);
 			window.removeEventListener('touchmove', onTouchMove);
+			window.removeEventListener('touchend', onTouchEnd);
 			if (raf) cancelAnimationFrame(raf);
 			document.body.style.overflow = '';
 		};
@@ -132,27 +196,23 @@
 	.layer.code {
 		color: #fff;
 	}
-	.hint {
-		position: fixed;
-		bottom: 2.2rem;
+	.scroll-cue {
+		position: absolute;
+		top: 115%;
 		left: 50%;
 		transform: translateX(-50%);
-		font: 0.75rem/1.1 monospace;
-		letter-spacing: 0.2em;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: .35rem;
+		font: 500 0.7rem/1 monospace;
+		letter-spacing: .35em;
 		text-transform: uppercase;
-		color: #666;
-		opacity: 0.55;
+		color: #aaa;
 		pointer-events: none;
 	}
-	.hint::after {
-		content: "";
-		display: block;
-		width: 60px;
-		margin: 0.55rem auto 0;
-		height: 2px;
-		background: linear-gradient(90deg, transparent, #444, transparent);
-	}
-	.hint[data-fadeout="true"] { opacity: 0; transition: opacity 600ms ease; }
+	.scroll-cue svg { width: 18px; height: 18px; stroke: #888; stroke-width: 2; fill: none; animation: bounce 1.8s ease-in-out infinite; }
+	@keyframes bounce { 0%,100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(6px); opacity: .4; } }
 
 	.paragraph-wrapper {
 		position: fixed;
@@ -183,11 +243,12 @@
 			style="opacity:{(1 - stackFade) * morph}; transform:scale({0.82 + morph * 0.18 + stackFade * 0.12}); filter:blur({(1-morph) * 3 + stackFade * 6}px);">
 			<span class="gdsc-word"><span class="g">G</span><span class="d">D</span><span class="s">S</span><span class="c">C</span></span>
 		</span>
+		<div class="scroll-cue" aria-hidden="true" style="opacity:{(1 - morph) * (1 - stackFade)}; filter:blur({(morph + stackFade) * 2}px);">
+			<span>SCROLL</span>
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</div>
 	</div>
 </div>
-{#if hintText}
-	<div class="hint" data-fadeout={paraProgress >= 1}>{hintText}</div>
-{/if}
 <div class="paragraph-wrapper" aria-hidden={paraProgress === 0}
 	style="--p:{paraProgress}; opacity:{paraProgress}; transform:translate(-50%, calc(-50% + {40 - paraProgress * 40}px)); filter:blur({(1-paraProgress)*6}px);">
 	<p style="font-size: clamp(1.25rem, 2.5vw, 1.5rem); line-height: 1.75; margin: 0.5em 0">
