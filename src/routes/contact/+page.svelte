@@ -28,7 +28,7 @@
   }
   .page-wrap {
     min-height:100svh;
-    padding:0 1.25rem 4rem;
+    padding:0 1.25rem calc(7rem + env(safe-area-inset-bottom, 0px));
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -241,7 +241,7 @@
   }
   @media (max-width:700px) {
     .page-wrap {
-      padding:0 1rem 3.5rem;
+        padding:clamp(3.25rem,12vh,5.5rem) 1rem calc(4.5rem + env(safe-area-inset-bottom, 0px));
     }
     .links {
       gap:.9rem;

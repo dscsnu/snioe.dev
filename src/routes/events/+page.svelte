@@ -22,7 +22,7 @@
 	}
 	.page {
 		min-height: 100svh;
-		padding: 5.5rem clamp(1rem, 4vw, 3rem) 4rem;
+		padding: 5.5rem clamp(1rem, 4vw, 3rem) calc(6.5rem + env(safe-area-inset-bottom, 0px));
 	}
 	.header {
 		max-width: 760px;
@@ -140,7 +140,7 @@
 	@keyframes heroShift { to { background-position: 200% 50%; } }
 	@media (max-width: 700px) {
 		.page {
-			padding: 5rem 1rem 3.5rem;
+			padding: 5rem 1rem calc(6.25rem + env(safe-area-inset-bottom, 0px));
 		}
 		.grid {
 			gap: 1.1rem;
@@ -152,7 +152,7 @@
 			flex-direction: column;
 			justify-content: center;
 			min-height: 100svh;
-			padding: 0 clamp(1rem, 4vw, 3rem) 4rem;
+			padding: 0 clamp(1rem, 4vw, 3rem) calc(6rem + env(safe-area-inset-bottom, 0px));
 		}
 	}
 </style>
