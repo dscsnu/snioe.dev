@@ -3,9 +3,8 @@
 	import Nav from '$lib/components/Nav.svelte';
 
 	let progress = 0;
-	let target = 0;
+	let target = 0; 
 	let raf: number | null = null;
-	let touchY = 0;
 	let showGDSC = false;
 	const MAX_PROGRESS = 2;
 	const STACK_FADE_START = 1.0;
@@ -29,18 +28,6 @@
 		? 0
 		: (progress - STACK_FADE_END) / (MAX_PROGRESS - STACK_FADE_END);
 
-	const WHEEL_COEFF = 0.0012;
-	const PLATEAU_PROGRESS = 1.0;
-	const UNLOCK_PROGRESS_THRESHOLD = 0.9;
-	const UNLOCK_REQUIRED_ACCUM = 0.05;
-	let unlockedBeyondMorph = false;
-	let unlockAccum = 0;
-	let touchCoeff = 0.003;
-	let lastTouchTime = 0;
-	let lastTouchY = 0;
-	let touchVelocity = 0;
-	const INERTIA_FACTOR = 260;
-
 	function animate() {
 		if (Math.abs(target - progress) < 0.0005) {
 			progress = target;
@@ -56,82 +43,21 @@
 	}
 
 	onMount(() => {
-		document.body.style.overflow = 'hidden';
-		touchCoeff = 0.0045 * (800 / Math.min(window.innerHeight, 800));
-
-		const onWheel = (e: WheelEvent) => {
-			const delta = e.deltaY * WHEEL_COEFF;
-			if (!unlockedBeyondMorph) {
-				if (progress >= UNLOCK_PROGRESS_THRESHOLD) {
-					if (delta > 0) {
-						unlockAccum += delta;
-						if (unlockAccum >= UNLOCK_REQUIRED_ACCUM) {
-							unlockedBeyondMorph = true;
-						} else {
-							setTarget(PLATEAU_PROGRESS);
-							return;
-						}
-					}
-				}
-			}
-			setTarget(target + delta);
+		document.body.style.overflow = '';
+		const handleScroll = () => {
+			const vh = window.innerHeight || 1;
+			const raw = window.scrollY / vh;
+			progress = clamp(raw);
+			target = progress;
 		};
-		const onTouchStart = (e: TouchEvent) => {
-			touchY = e.touches[0].clientY;
-			lastTouchY = touchY;
-			lastTouchTime = performance.now();
-			touchVelocity = 0;
-		};
-		const onTouchMove = (e: TouchEvent) => {
-			const y = e.touches[0].clientY;
-			const dy = touchY - y;
-			touchY = y;
-			const now = performance.now();
-			const dt = now - lastTouchTime;
-			if (dt > 0) {
-				const instV = (lastTouchY - y) / dt;
-				touchVelocity = touchVelocity * 0.6 + instV * 0.4;
-				lastTouchTime = now;
-				lastTouchY = y;
-			}
-			const progDelta = dy * touchCoeff;
-			if (!unlockedBeyondMorph) {
-				if (progress >= UNLOCK_PROGRESS_THRESHOLD) {
-					if (progDelta > 0) {
-						unlockAccum += progDelta;
-						if (unlockAccum >= UNLOCK_REQUIRED_ACCUM) {
-							unlockedBeyondMorph = true;
-						} else {
-							setTarget(PLATEAU_PROGRESS);
-							return;
-						}
-					}
-				}
-			}
-			setTarget(target + progDelta);
-		};
-		const onTouchEnd = () => {
-			const v = touchVelocity;
-			const THRESH = 0.18;
-			if (Math.abs(v) > THRESH) {
-				let intended = target + (v * INERTIA_FACTOR * touchCoeff);
-				if (!unlockedBeyondMorph) {
-					intended = Math.min(intended, PLATEAU_PROGRESS);
-				}
-				setTarget(intended);
-			}
-		};
-		window.addEventListener('wheel', onWheel, { passive: true });
-		window.addEventListener('touchstart', onTouchStart, { passive: true });
-		window.addEventListener('touchmove', onTouchMove, { passive: true });
-		window.addEventListener('touchend', onTouchEnd, { passive: true });
+		const handleResize = () => handleScroll();
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		window.addEventListener('resize', handleResize);
+		handleScroll();
 		return () => {
-			window.removeEventListener('wheel', onWheel);
-			window.removeEventListener('touchstart', onTouchStart);
-			window.removeEventListener('touchmove', onTouchMove);
-			window.removeEventListener('touchend', onTouchEnd);
+			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('resize', handleResize);
 			if (raf) cancelAnimationFrame(raf);
-			document.body.style.overflow = '';
 		};
 	});
 </script>
@@ -141,9 +67,10 @@
 		background: #000;
 		margin: 0;
 		min-height: 100vh;
-		overflow: hidden;
+		overflow-x: hidden;
 		font-family: system-ui, sans-serif;
 	}
+	.scroll-span { height: calc(100vh * 2); width: 1px; pointer-events: none; }
 	.center-text {
 		position: fixed;
 		top: 50%;
@@ -257,3 +184,5 @@
 	</p>
 </div>
 <Nav visible={showNav} />
+
+<div class="scroll-span" aria-hidden="true"></div>
