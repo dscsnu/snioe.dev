@@ -101,9 +101,10 @@
 	.scroll-span { height: calc(100vh * 3); }
 	.center-text {
 		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		color: #fff;
 		font-size: clamp(3.5rem,10vw,6rem);
 		font-family: monospace;
