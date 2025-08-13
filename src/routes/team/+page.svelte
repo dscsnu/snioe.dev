@@ -34,6 +34,14 @@
     gap: 2.5rem;
     padding: 2.25rem 0;
   }
+    :root { --nav-height: 64px; }
+    .page-inner {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(3.5rem, 8vh, 5.25rem) 0 2.75rem;
+      gap: 2.5rem;
+    }
   .header {
     max-width: 880px;
     margin: 0 auto 2.2rem;
@@ -210,11 +218,13 @@
         padding: 4.5rem 0 3.25rem;
          gap: 2.25rem;
          }
+    .page-inner { padding: 5.25rem 0 3.25rem; }
     .grid { gap: 1rem; }
   }
   @media (min-width: 900px) {
     .page { padding: 0 clamp(2rem, 4vw, 4.5rem); }
     .page-inner { padding: 2.75rem 0; }
+    .page-inner { padding: 4.5rem 0 3rem; }
   }
   @media (min-width: 1200px) {
     .page {
@@ -223,7 +233,7 @@
     .page-inner {
       margin: 0 auto;
       max-width: 1550px;
-      padding: 3rem 0;
+    padding: calc(var(--nav-height) + 2.25rem) 0 3.25rem;
     }
     .sections {
       display: grid;
