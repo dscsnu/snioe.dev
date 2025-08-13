@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Nav from '$lib/components/Nav.svelte';
   export let data: { core: any[]; subcore: any[]; grouped: Record<string, any[]>; roles: string[]; error?: boolean };
   let showNav = true;
@@ -11,6 +12,11 @@
     }
     expanded = new Set(expanded);
   }
+
+  onMount(() => {
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+  });
 </script>
 
 <style>
@@ -19,6 +25,7 @@
     color: #fff;
     margin: 0;
     font-family: system-ui, sans-serif;
+    overflow-y: auto;
   }
   .page {
     min-height: 100dvh;

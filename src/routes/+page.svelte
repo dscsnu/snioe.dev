@@ -3,12 +3,14 @@
 	import Nav from '$lib/components/Nav.svelte';
 
 	let progress = 0;
+	let rawProgress = 0;
 	let target = 0; 
 	let raf: number | null = null;
 	let showGDSC = false;
 	const MAX_PROGRESS = 2;
-	const STACK_FADE_START = 1.0;
-	const STACK_FADE_END = 1.18;
+	const STACK_FADE_START = 0.9; 
+	const STACK_FADE_END = 1.15; 
+	const PARA_START = STACK_FADE_START;
 
 	const clamp = (v: number) => (v < 0 ? 0 : v > MAX_PROGRESS ? MAX_PROGRESS : v);
 	let morph = 0;
@@ -17,16 +19,24 @@
 	let showNav = false;
 	$: showNav = morph >= 0.62;
 	let stackFade = 0;
-	$: stackFade = progress <= STACK_FADE_START
-		? 0
-		: progress >= STACK_FADE_END
-		? 1
-		: (progress - STACK_FADE_START) / (STACK_FADE_END - STACK_FADE_START);
-
 	let paraProgress = 0;
-	$: paraProgress = progress <= STACK_FADE_END
-		? 0
-		: (progress - STACK_FADE_END) / (MAX_PROGRESS - STACK_FADE_END);
+
+	function ease(t: number) {
+		return t * t * (3 - 2 * t);
+	}
+
+	$: {
+		const rawStack = progress <= STACK_FADE_START
+			? 0
+			: progress >= STACK_FADE_END
+			? 1
+			: (progress - STACK_FADE_START) / (STACK_FADE_END - STACK_FADE_START);
+		stackFade = ease(rawStack);
+		const rawPara = progress <= PARA_START
+			? 0
+			: (progress - PARA_START) / (MAX_PROGRESS - PARA_START);
+		paraProgress = ease(rawPara > 1 ? 1 : rawPara);
+	}
 
 	function animate() {
 		if (Math.abs(target - progress) < 0.0005) {
@@ -45,10 +55,10 @@
 	onMount(() => {
 		document.body.style.overflow = '';
 		const handleScroll = () => {
-			const vh = window.innerHeight || 1;
-			const raw = window.scrollY / vh;
-			progress = clamp(raw);
-			target = progress;
+			const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+			const raw = scrollable > 0 ? (window.scrollY / scrollable) * MAX_PROGRESS : 0;
+		rawProgress = clamp(raw);
+		if (!raf) raf = requestAnimationFrame(tickSmooth);
 		};
 		const handleResize = () => handleScroll();
 		window.addEventListener('scroll', handleScroll, { passive: true });
@@ -60,6 +70,23 @@
 			if (raf) cancelAnimationFrame(raf);
 		};
 	});
+
+	function tickSmooth() {
+		const diff = rawProgress - progress;
+		if (Math.abs(diff) < 0.0005) {
+			progress = rawProgress;
+			runPost();
+			raf = null;
+			return;
+		}
+		progress += diff * 0.12;
+		runPost();
+		raf = requestAnimationFrame(tickSmooth);
+	}
+
+	function runPost() {
+		target = progress;
+	}
 </script>
 
 <style>
@@ -71,6 +98,7 @@
 		font-family: system-ui, sans-serif;
 	}
 	.scroll-span { height: calc(100vh * 2); width: 1px; pointer-events: none; }
+	.scroll-span { height: calc(100vh * 3); }
 	.center-text {
 		position: fixed;
 		top: 50%;
@@ -147,7 +175,7 @@
 		max-width: 640px;
 		width: min(90%, 640px);
 		color: #eee;
-		font: 400 clamp(0.95rem, 1.4vw, 1.05rem)/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+		font: 400 1rem/1.55 system-ui, sans-serif;
 		letter-spacing: 0.015em;
 		text-align: center;
 		z-index: 5;
@@ -177,7 +205,7 @@
 	</div>
 </div>
 <div class="paragraph-wrapper" aria-hidden={paraProgress === 0}
-	style="--p:{paraProgress}; opacity:{paraProgress}; transform:translate(-50%, calc(-50% + {40 - paraProgress * 40}px)); filter:blur({(1-paraProgress)*6}px);">
+	style="--p:{paraProgress}; opacity:{paraProgress}; transform:translate(-50%, calc(-50% + {22 - paraProgress * 22}px)); filter:blur({(1-paraProgress)*5}px);">
 	<p style="font-size: clamp(1.25rem, 2.5vw, 1.5rem); line-height: 1.75; margin: 0.5em 0">
 		GDSC is a student-led community that builds and learns through code, creativity and collaboration. With core teams in Development, AI/ML, CP, Creative, Event Management and Marketing, we make tech fun and impactful on campus.
 		Basically, it  is the tech club equivalent of viral labubu dubai chocolate crumbl cookie matcha latte in a stanley cup.

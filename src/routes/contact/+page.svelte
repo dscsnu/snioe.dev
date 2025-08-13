@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Nav from '$lib/components/Nav.svelte';
   let showNav = true;
   const email = 'dsc.club@snu.edu.in';
@@ -10,6 +11,11 @@
     { name: 'Manan Raina', role: 'Deputy Lead', phone: '+91 85951 54723' },
     { name: 'Tilika Chopra', role: 'Coordinator', phone: '+91 98111 75334' }
   ];
+
+  onMount(() => {
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+  });
 </script>
 
 <style>
@@ -18,6 +24,7 @@
     color:#fff;
     margin:0;
     font-family:system-ui,sans-serif;
+    overflow-y:auto;
   }
   .page-wrap {
     min-height:100svh;

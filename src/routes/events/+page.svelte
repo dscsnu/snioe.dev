@@ -1,9 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import events from '$lib/events.json';
 	interface EventItem { name:string; description:string; image:string }
 	const list = events as EventItem[];
 	let showNav = true;
+
+	onMount(() => {
+		document.body.style.overflow = 'auto';
+		document.documentElement.style.overflowY = 'auto';
+	});
 </script>
 
 <style>
@@ -12,6 +18,7 @@
 		color: #fff;
 		margin: 0;
 		font-family: system-ui, sans-serif;
+		overflow-y: auto;
 	}
 	.page {
 		min-height: 100svh;
