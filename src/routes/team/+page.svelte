@@ -227,6 +227,7 @@
          }
     .page-inner { padding: 5.25rem 0 3.25rem; }
     .grid { gap: 1rem; }
+    .tracks-section { padding-bottom: 6.5rem; }
   }
   @media (min-width: 900px) {
     .page { padding: 0 clamp(2rem, 4vw, 4.5rem); }
