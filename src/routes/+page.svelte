@@ -31,7 +31,7 @@
 
 	const WHEEL_COEFF = 0.0012;
 	const PLATEAU_PROGRESS = 1.0;
-	const UNLOCK_PROGRESS_THRESHOLD = 0.99;
+	const UNLOCK_PROGRESS_THRESHOLD = 0.9;
 	const UNLOCK_REQUIRED_ACCUM = 0.05;
 	let unlockedBeyondMorph = false;
 	let unlockAccum = 0;
