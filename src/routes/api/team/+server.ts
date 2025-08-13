@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types';
 import { fetchTeam, coreFetchTeam } from '$lib/server/googleSheets';
 
 let cache: { at: number; data: unknown } | null = null;
-const TTL_MS = 60_000;
+const TTL_MS = 1_500_000;
 
 export const GET: RequestHandler = async () => {
 	try {
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
         console.log(coreSubCore);
 		cache = { at: now, data: {"coreSubCore": coreSubCore, "team": team} };
 		return new Response(JSON.stringify({"coreSubCore": coreSubCore, "team": team}), {
-			headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=30' }
+			headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=1500' }
 		});
 	} catch (err: any) {
 		return new Response(JSON.stringify({ error: 'Failed to load team', detail: err.message }), { status: 500 });
