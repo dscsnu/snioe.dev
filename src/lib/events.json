@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Labyrinth",
+    "description": "Project Cycle is where your ideas come alive, you form your own team, build something impactful, and get featured for your creation.",
+    "image": "https://picsum.photos/seed/gdsc4/640/360"
+  },
+  {
+    "name": "SSH",
+    "description": "SSH is an overnight intra-college hackathon open to everyone, where you can build, showcase, and compete with your ideas and win exciting prizes, with a chance to advance to the national level(SIH).",
+    "image": "/images/ssh.jpeg"
+  },
+  {
+    "name": "Ping",
+    "description": "Ping by GDSC is an immersive tech journey starting with a skill-building bootcamp and culminating in a high energy hackathon, where participants turn ideas into impactful projects.",
+    "image": "/images/ping.jpeg"
+  },
+  {
+    "name": "Project Cycle",
+    "description": "Project Cycle is where your ideas come alive, you form your own team, build something impactful, and get featured for your creation.",
+    "image": "/images/snu_day.jpeg"
+  }
+]
