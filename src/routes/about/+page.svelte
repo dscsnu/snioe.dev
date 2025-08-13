@@ -1,6 +1,12 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	let showNav = true;
+
+    onMount(() => {
+		document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflowY = 'hidden';
+	});
 </script>
 
 <style>
