@@ -1,6 +1,8 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
+	injectAnalytics({ mode: 'production' });
 	let { children } = $props();
 </script>
 
