@@ -6,7 +6,7 @@
   const instagram = 'https://www.instagram.com/gdsc.snioe/';
   interface PhoneContact { name:string; role:string; phone:string }
   const phones: PhoneContact[] = [
-    { name: 'Pustak Patak', role: 'Lead', phone: '+91 74793 34559' },
+    { name: 'Pustak Pathak', role: 'Lead', phone: '+91 74793 34559' },
     { name: 'Navya Jain', role: 'Advisor', phone: '+91 97739 03680' },
     { name: 'Manan Raina', role: 'Deputy Lead', phone: '+91 85951 54723' },
     { name: 'Tilika Chopra', role: 'Coordinator', phone: '+91 98111 75334' }
