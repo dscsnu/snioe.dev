@@ -1,3 +1,6 @@
+<script context="module" lang="ts">
+	export const navAnimState = { done: false };
+</script>
 <script lang="ts">
 	export let visible = false;
 
@@ -10,10 +13,9 @@
 		{ href: '/contact', label: 'Contact' }
 	];
 
-	let hasShown = false;
 	let drawAttention = false;
-	$: if (visible && !hasShown) {
-		hasShown = true;
+		$: if (visible && !navAnimState.done) {
+			navAnimState.done = true;
 		setTimeout(() => {
 			drawAttention = true;
 			setTimeout(() => (drawAttention = false), 1800);
