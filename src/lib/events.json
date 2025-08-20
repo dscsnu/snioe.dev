@@ -1,8 +1,8 @@
 [
   {
     "name": "Labyrinth",
-    "description": "Project Cycle is where your ideas come alive, you form your own team, build something impactful, and get featured for your creation.",
-    "image": "https://picsum.photos/seed/gdsc4/640/360"
+    "description": "Labyrinth is a team-based treasure hunt where you solve puzzles and follow clues through a mobile web app, blending the thrill of a hackathon with the excitement of a race to win.",
+    "image": "/images/laby.jpeg"
   },
   {
     "name": "SSH",
