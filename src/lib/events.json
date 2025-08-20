@@ -18,5 +18,10 @@
     "name": "Project Cycle",
     "description": "Project Cycle is where your ideas come alive, you form your own team, build something impactful, and get featured for your creation.",
     "image": "/images/snu_day.jpeg"
+  },
+  {
+    "name": "Summer Hackathon (Hack-enshmirtz)",
+    "description": "Summer Hackathon (Hack-enshmirtz) is a theme-based event where you can collaborate with peers, learn new skills, and build innovative projects over the summer. The previous summer was based on the theme of Phineas and Ferb.",
+    "image": "/images/summerhack.jpeg"
   }
 ]
