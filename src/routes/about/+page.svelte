@@ -74,7 +74,7 @@
 </style>
 
 <div class="page-wrap">
-	<h1 class="hero">About GDSC</h1>
+	<h1 class="hero">About GDG</h1>
 	<p class="sub">We design experiences where students learn by building together. Our chapters explore web, mobile, hardware, cloud, AI/ML and competitive programming while crafting events that welcome every curious mind.</p>
 	<p class="extra">Beyond the code, we focus on mentorship, inclusive culture and shipping things that make campus tech energy tangible. Workshops, lightning talks, hack nights, coffee chats – a rhythm that keeps momentum real. If you're the kind who experiments, ships, iterates and memes at 2am over a feature name, you'll fit right in.</p>
 </div>
