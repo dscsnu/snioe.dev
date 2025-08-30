@@ -188,7 +188,7 @@
 </style>
 
 <div class="center-text">
-	<div class="stack" aria-live="polite" aria-label={showGDSC ? 'GDG' : 'Code Symbol'}>
+	<div class="stack" aria-live="polite" aria-label={showGDSC ? 'GDSC' : 'Code Symbol'}>
 		<span
 			class="layer code"
 			style="opacity:{(1 - morph) * (1 - stackFade)}; transform:scale({1 - morph * 0.18 - stackFade * 0.05}); filter:blur({(morph + stackFade) * 3}px);">
@@ -197,7 +197,7 @@
 		<span
 			class="layer gdsc"
 			style="opacity:{(1 - stackFade) * morph}; transform:scale({0.82 + morph * 0.18 + stackFade * 0.12}); filter:blur({(1-morph) * 3 + stackFade * 6}px);">
-			<span class="gdsc-word"><span class="g">G</span><span class="d">D</span><span class="s">S</span><span class="c">C</span></span>
+			<span class="gdsc-word"><span class="g">G</span><span class="d">D</span><span class="s">G</span></span>
 		</span>
 		<div class="scroll-cue" aria-hidden="true" style="opacity:{(1 - morph) * (1 - stackFade)}; filter:blur({(morph + stackFade) * 2}px);">
 			<span>SCROLL</span>
