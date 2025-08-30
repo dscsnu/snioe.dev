@@ -188,7 +188,7 @@
 </style>
 
 <div class="center-text">
-	<div class="stack" aria-live="polite" aria-label={showGDSC ? 'GDSC' : 'Code Symbol'}>
+	<div class="stack" aria-live="polite" aria-label={showGDSC ? 'GDG' : 'Code Symbol'}>
 		<span
 			class="layer code"
 			style="opacity:{(1 - morph) * (1 - stackFade)}; transform:scale({1 - morph * 0.18 - stackFade * 0.05}); filter:blur({(morph + stackFade) * 3}px);">
@@ -208,7 +208,7 @@
 <div class="paragraph-wrapper" aria-hidden={paraProgress === 0}
 	style="--p:{paraProgress}; opacity:{paraProgress}; transform:translate(-50%, calc(-50% + {22 - paraProgress * 22}px)); filter:blur({(1-paraProgress)*5}px);">
 	<p style="font-size: clamp(1.25rem, 2.5vw, 1.5rem); line-height: 1.75; margin: 0.5em 0">
-		GDSC is a student-led community that builds and learns through code, creativity and collaboration. With core teams in Development, AI/ML, CP, Creative, Event Management and Marketing, we make tech fun and impactful on campus.
+		GDG is a student-led community that builds and learns through code, creativity and collaboration. With core teams in Development, AI/ML, CP, Creative, Event Management and Marketing, we make tech fun and impactful on campus.
 		Basically, it  is the tech club equivalent of viral labubu dubai chocolate crumbl cookie matcha latte in a stanley cup.
 	</p>
 </div>
